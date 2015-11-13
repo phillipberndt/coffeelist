@@ -3,6 +3,7 @@
 from django.core import mail
 from django.db.models import Q
 from django.template.loader import get_template
+from django.template import Context
 from django.conf import settings
 
 from . import models
@@ -21,13 +22,13 @@ def send_balance_mails(deposit_changes):
     mail_template = get_template("balance-mail.txt")
     for drinker in drinkers:
         cross_count, cost = deposit_changes.get(drinker.pk, (0, 0))
-        mail_text = mail_template.render({
+        mail_text = mail_template.render(Context({
             "drinker": drinker,
             "cross_count": cross_count,
             "cost": cost,
             "signature": getattr(settings, "COFFEE_SIGNATURE", "- coffee team -"),
             "homepage": getattr(settings, "COFFEE_HOMEPAGE", "-"),
-        })
+        }))
         messages.append(mail.EmailMessage("Coffee balance", mail_text, settings.EMAIL_SENDER, (drinker.email,),
                                           headers={"Content-Type": "text/plain; charset=utf8"}))
 
