@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load coffee %}
+{% block content %}
+
+<h2>{{ drinker }}</h2>
+
+Current balance: {{ drinker.deposit | amount }}
+
+<h3>Latest transactions</h3>
+<table class="table">
+	<tr><th>Date</th><th>Amount</th><th>Description</th></tr>
+	{% for transaction in transactions %}
+		<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}</td></tr>
+		{% if transaction.related_sheet_entry %}
+		<tr class="imagerow"><td colspan="3"><img src="{{ transaction.related_sheet_entry.get_absolute_url }}"></td></tr>
+		{% endif %}
+	{% endfor %}
+</table>
+
+
+{% if request.user.is_authenticated %}
+<h3>Manage this coffee drinker</h3>
+<form method="post" action="{% url "make-deposit" drinker.pk %}">
+	{% csrf_token %}
+	{{ deposit_form.as_p }}
+	<input type="submit" value="Deposit" class="btn btn-primary">
+</form>
+<p>
+	<br>
+	<a href="{% url "edit-drinker" drinker.pk %}">Edit this coffee drinker's details</a>
+</p>
+{% endif %}
+
+{% endblock %}

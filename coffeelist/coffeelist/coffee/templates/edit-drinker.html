@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+	<form method="post">
+		{% csrf_token %}
+		{{ drinker_form.as_p }}
+		<input type="submit" value="Edit" class="btn btn-primary">
+	</form>
+
+	{% if drinker %}
+	<p><a href="{% url "view-drinker" drinker.pk %}">Return to drinker details</a></p>
+	{% endif %}
+{% endblock %}

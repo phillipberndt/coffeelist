@@ -1,0 +1,8 @@
+Dear {{ drinker }},
+
+this is your monthly coffee balance reminder. {% if cross_count %}In the latest coffee list, you've made {{ cross_count }} crosses, costing you {{ cost }}€. {% endif %}Your current balance is {{ drinker.deposit | stringformat:"+2.2f" }}€. Automated detection is still in development and might still make mistakes from time to time. We encourage you to check for yourselves on the website: {{ homepage }}
+
+{% if drinker.deposit < 0 %}Please come see us in Room 016 to replenish your account at your earliest convenience!{% if drinker.deposit < -20 %} Note that the coffee service is not funded by the institute in any way. If you do not pay ASAP, there will be no more coffee!{% endif %}
+
+{% endif %}Yours,
+{{ signature }}

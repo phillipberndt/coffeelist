@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load coffee %}
+{% block content %}
+{% if intro_text %}
+<p>
+	{{ intro_text }}
+</p>
+{% endif %}
+
+<div class="row">
+	<div class="drinkers col-md-6">
+		<h2>Coffee consumers</h2>
+		<table class="table">
+		{% for drinker in drinkers %}
+			<tr>
+				<td><a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a></td>
+				<td>{{ drinker.deposit | amount:True }}</span></td>
+			</tr>
+		{% endfor %}
+		</table>
+
+		{% if request.user.is_authenticated %}
+		<hr>
+		<form method="post" action="{% url "edit-drinker" %}">
+			{% csrf_token %}
+			<div id="add_consumer">
+				<h2>Add coffee consumer</h2>
+				{{ new_drinker_form.as_p }}
+				<input type="submit" class="btn btn-primary" value="Add consumer" />
+			</div>
+		</form>
+
+		{% endif %}
+	</div>
+
+
+	<div class="sheets col-md-6">
+		<h2>Coffee sheets</h2>
+
+		<ul>
+		{% for sheet in sheet_list %}
+		<li><a href="/sheet/{{ sheet.pk }}">{{ sheet.pub_date }}</a>
+		{% if not sheet.approved %}
+			<span data-toggle="tooltip"
+				title="This sheet was scanned but the automated detection was not yet approved by us" data-placement="right" class="label label-info">Unapproved</span>
+		{% endif %}</li>
+		{% endfor %}
+		</ul>
+		<script type="text/javascript">
+			$('[data-toggle="tooltip"]').tooltip()
+		</script>
+
+		{% if request.user.is_authenticated %}
+		<hr>
+		<h2>Manage sheets</h2>
+
+		<form method="post" action="{% url "upload-sheet" %}" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ upload_form.as_p }}
+			<a href="{% url "new-sheet" %}" class="btn btn-primary" onclick="return confirm('Are you certain?')">Create a new sheet</a>
+			<input type="submit" class="btn btn-primary" value="Upload sheet">
+		</form>
+
+		{% endif %}
+	</div>
+</div>
+
+{% if request.user.is_authenticated %}
+<hr>
+<div class="row">
+	<h2>Bank</h2>
+	<table class="table">
+		<tr><th>Date</th><th>Amount</th><th>Details</th></tr>
+		{% for transaction in bank_transactions %}
+			<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}
+					{% if transaction.coffee_drinker %}(<a href="{{ transaction.coffee_drinker.get_absolute_url }}">{{ transaction.coffee_drinker }}</a>){% endif %}
+					{% if transaction.attachment %}(<a href="{% url "view-attachment" transaction.pk %}">Attachment</a>){% endif %}
+				</td></tr>
+		{% endfor %}
+	</table>
+	<div class="well"><strong>Current total</strong>: {{ bank_amount | amount }}</div>
+
+	<h3>New transaction</h3>
+	<form method="post" action="{% url "new-bank-accounting-entry" %}" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ bank_accounting_entry_form.as_p }}
+		<input type="submit" value="Save" class="btn btn-primary">
+	</form>
+</div>
+{% endif %}
+
+{% endblock %}
