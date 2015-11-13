@@ -167,7 +167,7 @@ def approve_sheet(request, sheet_id):
     sheet = get_object_or_404(models.CoffeeList, pk=sheet_id)
     deposit_changes = sheet.approve()
     mail.send_balance_mails(deposit_changes)
-    return reverse("view-sheet", args=(sheet_id,))
+    return redirect(reverse("view-sheet", args=(sheet_id,)))
 
 @login_required
 def new_bank_accounting_entry(request):
