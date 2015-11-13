@@ -32,7 +32,10 @@ def render_index_page(request, context=None):
     bank_accounting_entry_form = forms.BankAccountingEntryForm()
     drinkers = models.CoffeeDrinker.objects.order_by("name")
     if request.user.is_authenticated():
-        bank_amount = decimal.Decimal(models.BankAccountingEntry.objects.aggregate(Sum("amount"))["amount__sum"])
+        try:
+            bank_amount = decimal.Decimal(models.BankAccountingEntry.objects.aggregate(Sum("amount"))["amount__sum"])
+        except TypeError:
+            bank_amount = 0
     else:
         drinkers = drinkers.filter(active=True)
     rcontext = {
