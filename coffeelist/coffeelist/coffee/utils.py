@@ -277,7 +277,7 @@ def scan_list(image):
     bw_image = image.convert("L")
     zbar_image = zbar.Image(image.size[0], image.size[1], "Y800", bw_image.tobytes())
     processor = zbar.Processor()
-    processor.init()
+    processor.init(video_device=None, enable_display=False)
 
     for cfg in ("enable=1 ascii=1 x-density=1 y-density=1 min-len=1").split():
         processor.parse_config(cfg)
