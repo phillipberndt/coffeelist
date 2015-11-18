@@ -41,7 +41,7 @@ class BankAccountingEntry(models.Model):
     date = models.DateTimeField(verbose_name="Date", auto_now_add=True)
     text = models.CharField(verbose_name="Description", max_length=255, help_text="A detailed description of the transaction")
     amount = models.DecimalField(verbose_name="Amount", max_digits=5, decimal_places=2, help_text="The amount of money deposited into the bank. Use negative values for spendings.")
-    attachment = models.FileField(verbose_name="Attachment", help_text="E.g. a scan of a receipt")
+    attachment = models.FileField(verbose_name="Attachment", help_text="E.g. a scan of a receipt", blank=True)
 
     def __str__(self):
         return "%sOn %s: %s [%2.2f]" % (("For %s" % self.coffee_drinker) if self.coffee_drinker else "", self.date, self.text, self.amount)
