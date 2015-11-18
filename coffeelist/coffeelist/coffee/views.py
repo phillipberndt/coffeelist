@@ -36,6 +36,10 @@ def render_index_page(request, context=None):
             bank_amount = decimal.Decimal(models.BankAccountingEntry.objects.aggregate(Sum("amount"))["amount__sum"])
         except TypeError:
             bank_amount = 0
+        try:
+            deposited = decimal.Decimal(models.CoffeeDrinker.objects.filter(deposit__gt=0).aggregate(Sum("deposit"))["deposit__sum"])
+        except TypeError:
+            deposited = 0
     else:
         drinkers = drinkers.filter(active=True)
     rcontext = {
@@ -47,6 +51,7 @@ def render_index_page(request, context=None):
         "bank_amount": bank_amount,
         "bank_accounting_entry_form": bank_accounting_entry_form,
         "intro_text": getattr(settings, "COFFEE_PAGE_INTRO_TEXT", ""),
+        "deposited": deposited,
     }
     rcontext.update(context or {})
     return render(request, "index.html", rcontext)
