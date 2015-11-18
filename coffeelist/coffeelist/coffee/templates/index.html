@@ -78,7 +78,7 @@
 				</td></tr>
 		{% endfor %}
 	</table>
-	<div class="well"><strong>Current total</strong>: {{ bank_amount | amount }} (Deposited by drinkers: {{ deposited | amount }})</div>
+	<div class="well"><strong>Current total</strong>: {{ bank_amount | amount }} (Assets: {{ assets | amount }})</div>
 
 	<h3>New transaction</h3>
 	<form method="post" action="{% url "new-bank-accounting-entry" %}" enctype="multipart/form-data">

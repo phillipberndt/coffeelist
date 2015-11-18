@@ -29,6 +29,7 @@ def render_index_page(request, context=None):
     upload_form = forms.ManualSheetUpload()
     bank_transactions = models.BankAccountingEntry.objects.order_by("-date")
     bank_amount = 0
+    deposited = 0
     bank_accounting_entry_form = forms.BankAccountingEntryForm()
     drinkers = models.CoffeeDrinker.objects.order_by("name")
     if request.user.is_authenticated():
@@ -51,7 +52,7 @@ def render_index_page(request, context=None):
         "bank_amount": bank_amount,
         "bank_accounting_entry_form": bank_accounting_entry_form,
         "intro_text": getattr(settings, "COFFEE_PAGE_INTRO_TEXT", ""),
-        "deposited": deposited,
+        "assets": bank_amount - deposited,
     }
     rcontext.update(context or {})
     return render(request, "index.html", rcontext)
