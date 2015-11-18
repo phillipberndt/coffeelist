@@ -23,6 +23,8 @@ class CoffeeDrinker(models.Model):
     def __str__(self):
         return self.name
 
+    __unicode__ = __str__
+
     def get_absolute_url(self):
         return reverse("view-drinker", args=(self.pk,))
 
@@ -36,6 +38,9 @@ class CoffeeDrinkerAccountingEntry(models.Model):
     def __str__(self):
         return "For %s on %s: %s [%2.2f]" % (self.coffee_drinker, self.date, self.text, self.amount)
 
+    def __unicode__(self):
+        return u"For %s on %s: %s [%2.2f]" % (self.coffee_drinker, self.date, self.text, self.amount)
+
 class BankAccountingEntry(models.Model):
     coffee_drinker = models.ForeignKey(CoffeeDrinker, related_name="bank_accounting", null=True)
     date = models.DateTimeField(verbose_name="Date", auto_now_add=True)
@@ -46,12 +51,18 @@ class BankAccountingEntry(models.Model):
     def __str__(self):
         return "%sOn %s: %s [%2.2f]" % (("For %s" % self.coffee_drinker) if self.coffee_drinker else "", self.date, self.text, self.amount)
 
+    def __unicode__(self):
+        return u"%sOn %s: %s [%2.2f]" % ((u"For %s" % self.coffee_drinker) if self.coffee_drinker else u"", self.date, self.text, self.amount)
+
 class CoffeeList(models.Model):
     pub_date = models.DateField(verbose_name="Publication date", auto_now_add=True)
     processed = models.BooleanField(verbose_name="Processed?", help_text="Whether all pages were scanned", default=False)
     approved = models.BooleanField(verbose_name="Approved?", help_text="Whether this was checked by the team and found ok", default=False)
 
     def __str__(self):
+        return "CoffeeList from %s" % (self.pub_date,)
+
+    def __unicode__(self):
         return "CoffeeList from %s" % (self.pub_date,)
 
     @transaction.atomic
@@ -144,6 +155,9 @@ class CoffeeListPage(models.Model):
     def __str__(self):
         return "CoffeeListPage #%d from %s" % (self.page_number, self.coffee_list.pub_date)
 
+    def __unicode__(self):
+        return u"CoffeeListPage #%d from %s" % (self.page_number, self.coffee_list.pub_date)
+
     def get_absolute_url(self):
         return reverse("view-sheet-image", args=(self.coffee_list.pk, self.page_number))
 
@@ -157,6 +171,9 @@ class CoffeeListEntry(models.Model):
 
     def __str__(self):
         return "CoffeeListEntry for %s from %s: %d crosses" % (self.coffee_drinker, self.coffee_list_page.coffee_list.pub_date, self.cross_count)
+
+    def __unicode__(self):
+        return u"CoffeeListEntry for %s from %s: %d crosses" % (self.coffee_drinker, self.coffee_list_page.coffee_list.pub_date, self.cross_count)
 
     def get_absolute_url(self):
         return reverse("view-sheet-image", args=(self.coffee_list_page.coffee_list.pk, self.coffee_list_page.page_number, self.position))
