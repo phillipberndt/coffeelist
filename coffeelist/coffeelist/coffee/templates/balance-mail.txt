@@ -1,4 +1,4 @@
-Dear {{ drinker }},
+{% load coffee %}Dear {{ drinker | first_name }},
 
 this is your monthly coffee balance reminder. {% if cross_count %}In the latest coffee list, you've made {{ cross_count }} crosses, costing you {{ cost | stringformat:"2.2f" }}€. {% endif %}Your current balance is {{ drinker.deposit | stringformat:"+2.2f" }}€. Automated detection is still in development and might still make mistakes from time to time. We encourage you to check for yourselves on the website: {{ homepage }}
 
