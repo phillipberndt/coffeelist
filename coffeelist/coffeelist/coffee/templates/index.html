@@ -14,7 +14,7 @@
 		{% for drinker in drinkers %}
 			<tr>
 				<td><a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a></td>
-				<td>{{ drinker.deposit | amount:True }}</span></td>
+				<td>{{ drinker.deposit | amount:True }}</td>
 			</tr>
 		{% endfor %}
 		</table>
