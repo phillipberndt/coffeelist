@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^sheet/(?P<sheet_id>[0-9]+)/(?P<page>[0-9]+)/reverse$', views.reverse_sheet_page_click, name="reverse-sheet-page-click"),
     url(r'^sheet/(?P<sheet_id>[0-9]+)/(?P<page>[0-9]+)/fix$', views.fix_sheet_page_click, name="fix-sheet-page-click"),
     url(r'^sheet/(?P<sheet_id>[0-9]+)/approve$', views.approve_sheet, name="approve-sheet"),
+    url(r'^sheet/(?P<sheet_id>[0-9]+)/download$', views.download_sheet, name="download-sheet"),
 	url(r'^new-bank-accounting-entry$', views.new_bank_accounting_entry, name="new-bank-accounting-entry"),
 	url(r'^view-attachment/(?P<log_id>[0-9]+)', views.view_attachment, name="view-attachment"),
 ]

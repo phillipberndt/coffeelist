@@ -176,6 +176,13 @@ def approve_sheet(request, sheet_id):
     return redirect(reverse("view-sheet", args=(sheet_id,)))
 
 @login_required
+def download_sheet(request, sheet_id):
+    sheet = get_object_or_404(models.CoffeeList, pk=sheet_id)
+    outfile = sheet.get_pdf()
+    outfile.seek(0)
+    return HttpResponse(outfile, content_type="application/pdf")
+
+@login_required
 def new_bank_accounting_entry(request):
     new_entry = forms.BankAccountingEntryForm(request.POST, request.FILES)
     if new_entry.is_valid():

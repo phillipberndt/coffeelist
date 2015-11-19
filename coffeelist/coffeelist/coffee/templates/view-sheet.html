@@ -4,7 +4,9 @@
 <h2>Sheet from {{ sheet.pub_date }}</h2>
 
 {% for page in sheet.pages.all %}
+{% if page.scan %}
 <img src="{{ page.get_absolute_url }}" class="img-responsive sheet" data-reverse-url="{% url "reverse-sheet-page-click" page.coffee_list.pk page.page_number %}" data-fix-url="{% url "fix-sheet-page-click" page.coffee_list.pk page.page_number %}">
+{% endif %}
 {% endfor %}
 
 {% if request.user.is_authenticated %}
@@ -31,6 +33,7 @@
 {% if not sheet.approved %}
 <br><br>
 <a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>
+<a href="{% url "download-sheet" sheet.pk %}" class="btn btn-primary">Download blank sheet</a>
 {% endif %}
 
 {% endif %}

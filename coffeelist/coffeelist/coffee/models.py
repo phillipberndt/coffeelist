@@ -84,6 +84,15 @@ class CoffeeList(models.Model):
         self.save()
         return deposit_changes
 
+    def get_pdf(self, title="Coffee list"):
+        lists = []
+        for sheet in self.pages.all().order_by("page_number"):
+            lists.append((sheet.pk, [ entry.coffee_drinker.name for entry in sheet.entries.all().order_by("position") ] ))
+
+        output_pdf = utils.generate_lists(lists, title)
+        output_pdf.seek(0)
+        return output_pdf
+
     @staticmethod
     @transaction.atomic
     def create_new_list(title="Coffee list"):
@@ -151,6 +160,13 @@ class CoffeeListPage(models.Model):
         if len(page.coffee_list.pages.filter(scan="")) == 0:
             page.coffee_list.processed = True
             page.coffee_list.save()
+
+    def get_pdf(self, title="Coffee list"):
+        output_pdf = utils.generate_list(self.pk,
+                [ entry.coffee_drinker.name for entry in self.entries.all().order_by("position") ],
+                title)
+        output_pdf.seek(0)
+        return output_pdf
 
     def __str__(self):
         return "CoffeeListPage #%d from %s" % (self.page_number, self.coffee_list.pub_date)
