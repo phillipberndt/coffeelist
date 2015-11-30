@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
+from django.utils.encoding import force_text
 
 import StringIO
 import os
@@ -166,7 +167,7 @@ def fix_sheet_page_click(request, sheet_id, page):
     if request.POST:
         entry.cross_count = request.POST["cross_count"]
         entry.save()
-    return JsonResponse({ "cross_count": entry.cross_count, "name": str(entry.coffee_drinker) })
+    return JsonResponse({ "cross_count": entry.cross_count, "name": force_text(entry.coffee_drinker) })
 
 @login_required
 def approve_sheet(request, sheet_id):
