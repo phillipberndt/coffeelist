@@ -161,6 +161,8 @@ class CoffeeListPage(models.Model):
             page.coffee_list.processed = True
             page.coffee_list.save()
 
+        return page
+
     def get_pdf(self, title="Coffee list"):
         output_pdf = utils.generate_list(self.pk,
                 [ entry.coffee_drinker.name for entry in self.entries.all().order_by("position") ],

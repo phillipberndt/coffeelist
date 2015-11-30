@@ -34,8 +34,31 @@
 <br><br>
 <a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>
 <a href="{% url "download-sheet" sheet.pk %}" class="btn btn-primary">Download blank sheet</a>
+
+{% if mail_preview %}
+<br>
+<h3>Preview of approvement mail</h3>
+<p>If you approve of this sheet, users will receive a mail like the following:</p>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Mail preview</h3>
+	</div>
+	<div class="panel-body">
+		<pre>{{ mail_preview | linebreaksbr }}</pre>
+	</div>
+</div>
 {% endif %}
 
+{% endif %}
+
+{% endif %}
+
+{% if not sheet.processed %}
+<form method="post" action="{% url "upload-sheet" %}" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ upload_form.as_p }}
+	<input type="submit" class="btn btn-primary" value="Upload sheet">
+</form>
 {% endif %}
 
 <script type="text/javascript">

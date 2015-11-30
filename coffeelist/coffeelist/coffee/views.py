@@ -119,20 +119,28 @@ def upload_sheet(request):
     upload_form = forms.ManualSheetUpload(request.POST, request.FILES)
     if upload_form.is_valid():
         try:
-            models.CoffeeListPage.process_scan(PIL.Image.open(request.FILES["sheet"]))
+            page = models.CoffeeListPage.process_scan(PIL.Image.open(request.FILES["sheet"]))
+            return redirect(reverse("view-sheet", args=(page.coffee_list.pk,)))
         except models.CoffeeListPage.ScanDeniedError as e:
             upload_form.add_error("sheet", e.message)
         except models.CoffeeListPage.ScanFailedError as e:
             upload_form.add_error("sheet", e.message)
-    if upload_form.is_valid():
-        return redirect("/")
-    else:
-        return render_index_page(request, { "upload_form": upload_form })
+    return render_index_page(request, { "upload_form": upload_form })
 
 def view_sheet(request, sheet_id):
     sheet = get_object_or_404(models.CoffeeList, pk=sheet_id)
+    try:
+        first_entry = sheet.pages.get(page_number=1).entries.get(position=0)
+        mail_preview = mail.render_balance_mail({
+            first_entry.coffee_drinker.pk: (first_entry.cross_count, models.COST_PER_COFFEE * first_entry.cross_count),
+        }, first_entry.coffee_drinker)
+    except:
+        mail_preview = False
+    upload_form = forms.ManualSheetUpload()
     return render(request, "view-sheet.html", {
         "sheet": sheet,
+        "mail_preview": mail_preview,
+        "upload_form": upload_form,
     })
 
 def view_sheet_image(request, sheet_id, page, position=None):
