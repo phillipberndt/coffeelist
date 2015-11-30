@@ -30,6 +30,10 @@
 	</div>
 </div>
 
+{% if sheet.approved %}
+<div class="well"><strong>Number of crosses</strong>: {{ cross_count }}</div>
+{% endif %}
+
 {% if not sheet.approved %}
 <br><br>
 <a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>

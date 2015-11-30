@@ -75,7 +75,6 @@ def edit_drinker(request, drinker_id=None):
             drinker.active = True
             drinker.deposit = 0.0
         drinker.save()
-        return redirect("/")
     return render(request, "edit-drinker.html", {"drinker_form": drinker_form, "drinker": drinker})
 
 @login_required
@@ -130,6 +129,7 @@ def upload_sheet(request):
 
 def view_sheet(request, sheet_id):
     sheet = get_object_or_404(models.CoffeeList, pk=sheet_id)
+    cross_count = sheet.pages.aggregate(sum=Sum("entries__cross_count"))["sum"]
     try:
         first_entry = sheet.pages.get(page_number=1).entries.get(position=0)
         mail_preview = mail.render_balance_mail({
@@ -142,6 +142,7 @@ def view_sheet(request, sheet_id):
         "sheet": sheet,
         "mail_preview": mail_preview,
         "upload_form": upload_form,
+        "cross_count": cross_count,
     })
 
 def view_sheet_image(request, sheet_id, page, position=None):
