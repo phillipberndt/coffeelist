@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 {% block content %}
 
 <h2>Sheet from {{ sheet.pub_date }}</h2>
@@ -8,8 +9,14 @@
 <img src="{{ page.get_absolute_url }}" class="img-responsive sheet" data-reverse-url="{% url "reverse-sheet-page-click" page.coffee_list.pk page.page_number %}" data-fix-url="{% url "fix-sheet-page-click" page.coffee_list.pk page.page_number %}">
 {% endif %}
 {% endfor %}
+<br>
+{% if sheet.approved %}
+<div class="well"><strong>Number of crosses</strong>: {{ cross_count }}</div>
+{% endif %}
 
 {% if request.user.is_authenticated %}
+<br><br>
+
 <div class="modal fade" role="dialog" id="fix-dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -30,40 +37,35 @@
 	</div>
 </div>
 
-{% if sheet.approved %}
-<div class="well"><strong>Number of crosses</strong>: {{ cross_count }}</div>
-{% endif %}
-
-{% if not sheet.approved %}
-<br><br>
-<a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>
-<a href="{% url "download-sheet" sheet.pk %}" class="btn btn-primary">Download blank sheet</a>
-
-{% if mail_preview %}
-<br>
-<h3>Preview of approvement mail</h3>
-<p>If you approve of this sheet, users will receive a mail like the following:</p>
-<div class="panel panel-default">
+<div class="panel panel-primary">
 	<div class="panel-heading">
-		<h3 class="panel-title">Mail preview</h3>
+		    <h3 class="panel-title">Manage this sheet</h3>
 	</div>
 	<div class="panel-body">
+		{% if not sheet.processed %}
+		<form method="post" action="{% url "upload-sheet" %}" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ upload_form | bootstrap }}
+			<input type="submit" class="btn btn-default" value="Upload sheet">
+		</form>
+		<br>
+		{% endif %}
+
+		{% if not sheet.approved %}
+		<a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>
+		<a href="{% url "download-sheet" sheet.pk %}" class="btn btn-default">Download blank sheet</a>
+
+		{% if mail_preview %}
+		<br>
+		<h3>Preview of approvement mail</h3>
+		<p>If you approve of this sheet, users will receive a mail like the following:</p>
 		<pre>{{ mail_preview | linebreaksbr }}</pre>
-	</div>
+		{% endif %}
+		{% endif %}
 </div>
-{% endif %}
 
 {% endif %}
 
-{% endif %}
-
-{% if not sheet.processed %}
-<form method="post" action="{% url "upload-sheet" %}" enctype="multipart/form-data">
-	{% csrf_token %}
-	{{ upload_form.as_p }}
-	<input type="submit" class="btn btn-primary" value="Upload sheet">
-</form>
-{% endif %}
 
 <script type="text/javascript">
 	$(".sheet").each(function() {

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load coffee %}
+{% load bootstrap %}
 {% block content %}
 
 <h2>{{ drinker }}</h2>
@@ -19,22 +20,25 @@ Current balance: {{ drinker.deposit | amount }}
 
 
 {% if request.user.is_authenticated %}
-<h3>Manage this coffee drinker</h3>
-<form method="post" action="{% url "make-deposit" drinker.pk %}">
-	{% csrf_token %}
-	{{ deposit_form.as_p }}
-	<p class="checkbox">
-		<label>
-			<input type="checkbox" name="account_globally" value="1" checked> Also add a global accounting entry
-			<span id="helpBlock" class="help-block">Uncheck this to correct mistakes that have not affected the global bank account yet, e.g. mistakes due to wrong cross counts.</span>
-		</label>
-	</p>
-	<input type="submit" value="Deposit" class="btn btn-primary">
-</form>
-<p>
-	<br>
-	<a href="{% url "edit-drinker" drinker.pk %}">Edit this coffee drinker's details</a>
-</p>
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		    <h3 class="panel-title">Manage this coffee drinker</h3>
+	</div>
+	<div class="panel-body">
+		<form method="post" action="{% url "make-deposit" drinker.pk %}">
+			{% csrf_token %}
+			{{ deposit_form | bootstrap }}
+			<p class="checkbox">
+			<label>
+				<input type="checkbox" name="account_globally" value="1" checked> Also add a global accounting entry
+				<span id="helpBlock" class="help-block">Uncheck this to correct mistakes that have not affected the global bank account yet, e.g. mistakes due to wrong cross counts.</span>
+			</label>
+			</p>
+			<input type="submit" value="Deposit" class="btn btn-primary">
+			<a class="btn btn-default" href="{% url "edit-drinker" drinker.pk %}">Edit this coffee drinker's details</a>
+		</form>
+	</div>
+</div>
 {% endif %}
 
 {% endblock %}

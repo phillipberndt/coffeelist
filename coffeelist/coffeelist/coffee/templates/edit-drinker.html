@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 {% block content %}
 	<form method="post">
 		{% csrf_token %}
-		{{ drinker_form.as_p }}
+		{{ drinker_form | bootstrap }}
 		<input type="submit" value="Edit" class="btn btn-primary">
+		{% if drinker %}
+		<a class="btn btn-default" href="{% url "view-drinker" drinker.pk %}">Return to drinker details</a>
+		{% endif %}
 	</form>
 
-	{% if drinker %}
-	<p><a href="{% url "view-drinker" drinker.pk %}">Return to drinker details</a></p>
-	{% endif %}
 {% endblock %}
