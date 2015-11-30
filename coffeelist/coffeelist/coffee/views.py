@@ -68,7 +68,7 @@ def edit_drinker(request, drinker_id=None):
         drinker = get_object_or_404(models.CoffeeDrinker, pk=drinker_id)
         drinker_form = forms.CoffeeDrinkerForm(request.POST if request.POST else None, instance=drinker)
     else:
-        drinker_form = forms.CoffeeDrinkerForm(request.POST)
+        drinker_form = forms.NewCoffeeDrinkerForm(request.POST)
     if request.POST and drinker_form.is_valid():
         drinker = drinker_form.save(commit=False)
         if not drinker_id:
