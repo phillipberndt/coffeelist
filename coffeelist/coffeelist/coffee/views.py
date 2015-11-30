@@ -71,8 +71,9 @@ def edit_drinker(request, drinker_id=None):
         drinker_form = forms.CoffeeDrinkerForm(request.POST)
     if request.POST and drinker_form.is_valid():
         drinker = drinker_form.save(commit=False)
-        drinker.active = True
-        drinker.deposit = 0.0
+        if not drinker_id:
+            drinker.active = True
+            drinker.deposit = 0.0
         drinker.save()
         return redirect("/")
     return render(request, "edit-drinker.html", {"drinker_form": drinker_form, "drinker": drinker})

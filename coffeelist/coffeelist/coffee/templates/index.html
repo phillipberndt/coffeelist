@@ -13,7 +13,7 @@
 		<table class="table">
 		{% for drinker in drinkers %}
 			<tr>
-				<td><a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a></td>
+				<td>{% if not drinker.active %}<del>{% endif %}<a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a>{% if not drinker.active %}</del>{% endif %}</td>
 				<td>{{ drinker.deposit | amount:True }}</td>
 			</tr>
 		{% endfor %}
