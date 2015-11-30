@@ -23,6 +23,12 @@ Current balance: {{ drinker.deposit | amount }}
 <form method="post" action="{% url "make-deposit" drinker.pk %}">
 	{% csrf_token %}
 	{{ deposit_form.as_p }}
+	<p class="checkbox">
+		<label>
+			<input type="checkbox" name="account_globally" value="1" checked> Also add a global accounting entry
+			<span id="helpBlock" class="help-block">Uncheck this to correct mistakes that have not affected the global bank account yet, e.g. mistakes due to wrong cross counts.</span>
+		</label>
+	</p>
 	<input type="submit" value="Deposit" class="btn btn-primary">
 </form>
 <p>
