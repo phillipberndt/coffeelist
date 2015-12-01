@@ -13,8 +13,11 @@
 		<h2>Coffee consumers</h2>
 		<table class="table">
 		{% for drinker in drinkers %}
-			<tr>
-				<td>{% if not drinker.active %}<del>{% endif %}<a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a>{% if not drinker.active %}</del>{% endif %}</td>
+			<tr
+			{% if not drinker.active %}
+				class="del"
+			{% endif %}>
+				<td><a href="{{ drinker.get_absolute_url }}">{{ drinker.name }}</a></td>
 				<td>{{ drinker.deposit | amount:True }}</td>
 			</tr>
 		{% endfor %}

@@ -32,7 +32,7 @@ def render_index_page(request, context=None):
     bank_amount = 0
     deposited = 0
     bank_accounting_entry_form = forms.BankAccountingEntryForm()
-    drinkers = models.CoffeeDrinker.objects.order_by("name")
+    drinkers = models.CoffeeDrinker.objects.order_by("-active", "name")
     if request.user.is_authenticated():
         try:
             bank_amount = decimal.Decimal(models.BankAccountingEntry.objects.aggregate(Sum("amount"))["amount__sum"])

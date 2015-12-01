@@ -32,7 +32,7 @@ def send_balance_mails(deposit_changes):
                              (cross_count, cost) tuples.
     """
     messages = []
-    drinkers = models.CoffeeDrinker.objects.filter((Q(deposit__lt=0) | Q(pk__in=deposit_changes.keys())) & ~Q(email=""))
+    drinkers = models.CoffeeDrinker.objects.filter((Q(deposit__lt=0) | Q(pk__in=deposit_changes.keys())) & ~Q(email="") & Q(active=True))
     mail_template = get_template("balance-mail.txt")
     for drinker in drinkers:
         mail_text = render_balance_mail(deposit_changes, drinker, mail_template)
