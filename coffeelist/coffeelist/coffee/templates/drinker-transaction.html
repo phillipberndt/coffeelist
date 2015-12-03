@@ -1,0 +1,7 @@
+{% load coffee %}
+{% for transaction in transactions %}
+	<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}</td></tr>
+	{% if transaction.related_sheet_entry %}
+	<tr class="imagerow"><td colspan="3"><img src="{{ transaction.related_sheet_entry.get_absolute_url }}"></td></tr>
+	{% endif %}
+{% endfor %}

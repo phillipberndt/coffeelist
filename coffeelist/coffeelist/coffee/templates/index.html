@@ -82,12 +82,10 @@
 	<h2>Bank</h2>
 	<table class="table">
 		<tr><th>Date</th><th>Amount</th><th>Details</th></tr>
-		{% for transaction in bank_transactions %}
-			<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}
-					{% if transaction.coffee_drinker %}(<a href="{{ transaction.coffee_drinker.get_absolute_url }}">{{ transaction.coffee_drinker }}</a>){% endif %}
-					{% if transaction.attachment %}(<a href="{% url "view-attachment" transaction.pk %}">Attachment</a>){% endif %}
-				</td></tr>
-		{% endfor %}
+		{% include "index-transaction.html" %}
+		{% if total_transactions > 10 %}
+		<tr><td colspan="3"><a href="#" data-total="{{ total_transactions }}" class="load_more"><span class="glyphicon glyphicon-option-vertical"></span> Load older entries</a></td></tr>
+		{% endif %}
 	</table>
 	<div class="well"><strong>Current total</strong>: {{ bank_amount | amount }} (Assets: {{ assets | amount }})</div>
 

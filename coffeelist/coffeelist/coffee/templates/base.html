@@ -53,6 +53,25 @@ $.ajaxSetup({
         }
     }
 });
+$(document).ready(function() {
+		$("a.load_more").click(function(e) {
+			e.preventDefault();
+			var $this = $(this);
+			var total = $this.data("total");
+			var has = $this.closest("table").find("tr").length - 2;
+			if(has < total) {
+				$.post(document.location, "load_more=" + has, function(rsp) {
+					var old_position = $this.offset().top;
+					$this.closest("tr").before(rsp);
+					$(document).scrollTop($(document).scrollTop() + $this.offset().top - old_position);
+					if(has + 10 >= total) {
+						$this.remove();
+					}
+				});
+			}
+			return false;
+		});
+});
 </script>
 
 <body>

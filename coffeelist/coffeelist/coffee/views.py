@@ -28,12 +28,13 @@ def render_index_page(request, context=None):
     new_drinker_form = forms.NewCoffeeDrinkerForm()
     sheet_list = models.CoffeeList.objects.filter(processed=True).order_by("-pub_date")
     upload_form = forms.ManualSheetUpload()
-    bank_transactions = models.BankAccountingEntry.objects.order_by("-date")
+    bank_transactions = ()
     bank_amount = 0
     deposited = 0
     bank_accounting_entry_form = forms.BankAccountingEntryForm()
     drinkers = models.CoffeeDrinker.objects.order_by("-active", "name")
     if request.user.is_authenticated():
+        bank_transactions = models.BankAccountingEntry.objects.order_by("-date")
         try:
             bank_amount = decimal.Decimal(models.BankAccountingEntry.objects.aggregate(Sum("amount"))["amount__sum"])
         except TypeError:
@@ -42,6 +43,9 @@ def render_index_page(request, context=None):
             deposited = decimal.Decimal(models.CoffeeDrinker.objects.filter(deposit__gt=0).aggregate(Sum("deposit"))["deposit__sum"])
         except TypeError:
             deposited = 0
+        if request.POST and "load_more" in request.POST:
+            start = int(request.POST["load_more"])
+            return render(request, "index-transaction.html", { "bank_transactions": bank_transactions[start:start+10] })
     else:
         drinkers = drinkers.filter(active=True)
     rcontext = {
@@ -49,7 +53,8 @@ def render_index_page(request, context=None):
         "drinkers": drinkers,
         "sheet_list": sheet_list,
         "upload_form": upload_form,
-        "bank_transactions": bank_transactions,
+        "bank_transactions": bank_transactions[:10],
+        "total_transactions": len(bank_transactions),
         "bank_amount": bank_amount,
         "bank_accounting_entry_form": bank_accounting_entry_form,
         "intro_text": getattr(settings, "COFFEE_PAGE_INTRO_TEXT", ""),
@@ -103,9 +108,13 @@ def view_drinker(request, drinker_id=None):
     drinker = get_object_or_404(models.CoffeeDrinker, pk=drinker_id)
     transactions = drinker.custom_accounting.order_by("-date")
     deposit_form = forms.DepositForm()
+    if request.POST and "load_more" in request.POST:
+        start = int(request.POST["load_more"])
+        return render(request, "drinker-transaction.html", { "transactions": transactions[start:start+10] })
     return render(request, "view-drinker.html", {
         "drinker": drinker,
-        "transactions": transactions,
+        "transactions": transactions[:10],
+        "total_transactions": len(transactions),
         "deposit_form": deposit_form
     })
 

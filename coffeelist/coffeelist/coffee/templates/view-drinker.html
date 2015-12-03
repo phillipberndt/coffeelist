@@ -10,12 +10,10 @@ Current balance: {{ drinker.deposit | amount }}
 <h3>Latest transactions</h3>
 <table class="table">
 	<tr><th>Date</th><th>Amount</th><th>Description</th></tr>
-	{% for transaction in transactions %}
-		<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}</td></tr>
-		{% if transaction.related_sheet_entry %}
-		<tr class="imagerow"><td colspan="3"><img src="{{ transaction.related_sheet_entry.get_absolute_url }}"></td></tr>
-		{% endif %}
-	{% endfor %}
+	{% include "drinker-transaction.html" %}
+	{% if total_transactions > 10 %}
+	<tr><td colspan="3"><a href="#" data-total="{{ total_transactions }}" class="load_more"><span class="glyphicon glyphicon-option-vertical"></span> Load older entries</a></td></tr>
+	{% endif %}
 </table>
 
 

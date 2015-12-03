@@ -1,0 +1,7 @@
+{% load coffee %}
+{% for transaction in bank_transactions %}
+	<tr><td>{{ transaction.date }}</td><td>{{ transaction.amount | amount }}</td><td>{{ transaction.text }}
+			{% if transaction.coffee_drinker %}(<a href="{{ transaction.coffee_drinker.get_absolute_url }}">{{ transaction.coffee_drinker }}</a>){% endif %}
+			{% if transaction.attachment %}(<a href="{% url "view-attachment" transaction.pk %}">Attachment</a>){% endif %}
+	</td></tr>
+{% endfor %}
