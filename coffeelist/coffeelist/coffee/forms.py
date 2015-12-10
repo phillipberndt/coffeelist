@@ -6,7 +6,7 @@ from . import models
 class NewCoffeeDrinkerForm(ModelForm):
     class Meta:
         model = models.CoffeeDrinker
-        exclude = ("active", "deposit")
+        exclude = ("active", "deposit", "prefill", "note")
 
 class CoffeeDrinkerForm(ModelForm):
     class Meta:
