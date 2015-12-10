@@ -10,7 +10,7 @@ from . import utils
 # Create your tests here.
 class TestDetection(TestCase):
     def test_detect(self):
-        generated_pdf = utils.generate_lists(((1337, [ "0" ] * 10),)).getvalue()
+        generated_pdf = utils.generate_lists(((1337, [ "0", "asdf", ] + [ "0" ] * 8, { "asdf": 5 }),)).getvalue()
 
         try:
             converter = subprocess.Popen(["convert", "-density", "300", "-", "-quality", "80", "jpg:"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -29,9 +29,10 @@ class TestDetection(TestCase):
         processed_image, meta_data, cross_counts, positions = utils.scan_list(image)
 
         self.assertEqual(cross_counts[0], 1)
+        self.assertEqual(cross_counts[1], 5)
         self.assertIn("1337", meta_data)
         self.assertGreater(positions[0], 200)
-        for i in range(1, 10):
+        for i in range(2, 10):
             self.assertGreater(positions[i], positions[i-1])
             self.assertEqual(cross_counts[i], 0)
         self.assertEqual(positions[10], 0)

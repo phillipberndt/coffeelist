@@ -44,7 +44,7 @@ def generate_lists(lists, title="Coffee list"):
     canvas.save()
     return outfile
 
-def generate_list(list_id, names, title="Coffee list", canvas=None):
+def generate_list(list_id, names, pre_cross_dict={}, title="Coffee list", canvas=None):
     """
         Generate a PDF for a coffee list
 
@@ -52,6 +52,9 @@ def generate_list(list_id, names, title="Coffee list", canvas=None):
             list_id: A (preferably unique) ID for this list.
                      Will be embedded as a QR code into the URL
             names:   A list of names for this list
+            pre_cross_dict:
+                     A dictionary mapping names to a number of crosses to pre-draw
+                     onto the list
             title:   A heading for the list. Could e.g. include a date.
             canvas:  If set, draw to this canvas.
 
@@ -133,8 +136,14 @@ def generate_list(list_id, names, title="Coffee list", canvas=None):
         canvas.line(width, grid_y, width, new_y)
         box_start = COFFEE_NAME_FIELD_WIDTH * cm_unit
         box_width = (width - box_start) / COFFEE_BOXES_PER_LINE
+        pre_draw_crosses = pre_cross_dict.get(name, 0)
         for i in range(int((width - box_start) / box_width)):
             canvas.line(box_start, grid_y, box_start, new_y)
+            if pre_draw_crosses > 0:
+                pre_draw_crosses -= 1
+                cross_margin = 2
+                canvas.line(box_start + cross_margin, grid_y - cross_margin, box_start + box_width - cross_margin, new_y + cross_margin)
+                canvas.line(box_start + cross_margin, new_y + cross_margin, box_start + box_width - cross_margin, grid_y - cross_margin)
             box_start += box_width
         canvas.drawString(.2 * cm_unit, grid_y - (COFFEE_LINE_HEIGHT - .1) * cm_unit, name)
         grid_y = new_y
