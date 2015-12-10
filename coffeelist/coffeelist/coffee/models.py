@@ -19,6 +19,8 @@ class CoffeeDrinker(models.Model):
     email = models.EmailField(help_text="A means to reach the coffee enthusiast")
     deposit = models.DecimalField(help_text="Assets (Splendid!) or debit (Argh!)", max_digits=5, decimal_places=2)
     active = models.BooleanField(help_text="Whether to include this user on coffee lists", default=True)
+    prefill = models.IntegerField(help_text="Pre-fill some crosses for this drinker in new lists, for flatrates. If set, only these crosses count, the scan is ignored!", default=0)
+    note = models.TextField("Note (for admins)", blank=True)
 
     def __str__(self):
         return self.name
@@ -107,6 +109,7 @@ class CoffeeList(models.Model):
                                                          coffee_list=new_list)
             sheet_user_number = -1
             names_for_sheet = []
+            prefill_for_sheet = {}
             while drinkers and sheet_user_number < utils.COFFEE_COUNT_PER_PAGE - 2:
                 drinker = drinkers.pop(0)
                 sheet_user_number += 1
@@ -115,7 +118,9 @@ class CoffeeList(models.Model):
                                                position=sheet_user_number)
 
                 names_for_sheet.append(drinker.name)
-            lists.append((current_sheet.pk, names_for_sheet))
+                if drinker.prefill:
+                    prefill_for_sheet[drinker.name] = drinker.prefill
+            lists.append((current_sheet.pk, names_for_sheet, prefill_for_sheet))
 
         output_pdf = utils.generate_lists(lists, title)
         output_pdf.seek(0)
@@ -149,6 +154,8 @@ class CoffeeListPage(models.Model):
 
         for entry in CoffeeListEntry.objects.filter(coffee_list_page=page):
             entry.cross_count = markings[entry.position]
+            if entry.coffee_drinker.prefill:
+                entry.cross_count = entry.coffee_drinker.prefill
             entry.position_in_scan = mark_y_positions[entry.position]
             entry.save()
 

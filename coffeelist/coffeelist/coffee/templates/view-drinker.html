@@ -18,6 +18,18 @@ Current balance: {{ drinker.deposit | amount }}
 
 
 {% if request.user.is_authenticated %}
+
+{% if drinker.note %}
+<div class="panel panel-info">
+	<div class="panel-heading">
+		    <h3 class="panel-title">Note for this drinker</h3>
+	</div>
+	<div class="panel-body">
+		{{ drinker.note }}
+	</div>
+</div>
+{% endif %}
+
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		    <h3 class="panel-title">Manage this coffee drinker</h3>
