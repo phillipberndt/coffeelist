@@ -37,6 +37,7 @@
 	</div>
 </div>
 
+{% if not sheet.processed or not sheet.approved or mail_preview %}
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		    <h3 class="panel-title">Manage this sheet</h3>
@@ -63,6 +64,7 @@
 		{% endif %}
 		{% endif %}
 </div>
+{% endif %}
 
 {% endif %}
 
