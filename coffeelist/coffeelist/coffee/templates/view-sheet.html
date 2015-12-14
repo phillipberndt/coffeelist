@@ -37,7 +37,7 @@
 	</div>
 </div>
 
-{% if (not sheet.processed) or (not sheet.approved) %}
+{% if not sheet.processed or not sheet.approved %}
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		    <h3 class="panel-title">Manage this sheet</h3>
