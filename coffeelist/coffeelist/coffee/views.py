@@ -58,7 +58,7 @@ def render_index_page(request, context=None):
         "bank_amount": bank_amount,
         "bank_accounting_entry_form": bank_accounting_entry_form,
         "intro_text": getattr(settings, "COFFEE_PAGE_INTRO_TEXT", ""),
-        "assets": bank_amount - deposited,
+        "surplus": bank_amount - deposited,
     }
     rcontext.update(context or {})
     return render(request, "index.html", rcontext)
