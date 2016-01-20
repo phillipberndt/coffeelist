@@ -98,8 +98,9 @@ def edit_drinker_make_deposit(request, drinker_id):
         if not account_globally:
             description = "%s (Fixup)" % description
     models.CoffeeDrinkerAccountingEntry.objects.create(coffee_drinker=drinker, amount=amount, text=description)
-    if amount and account_globally:
-        models.BankAccountingEntry.objects.create(coffee_drinker=drinker, amount=amount, text="User %s made a %s" % (drinker, "deposit" if amount > 0 else "withdrawal"))
+    if amount:
+        if account_globally:
+            models.BankAccountingEntry.objects.create(coffee_drinker=drinker, amount=amount, text="User %s made a %s" % (drinker, "deposit" if amount > 0 else "withdrawal"))
         drinker.deposit += amount
         drinker.save()
     return redirect(reverse("view-drinker", args=(drinker.pk,)))
