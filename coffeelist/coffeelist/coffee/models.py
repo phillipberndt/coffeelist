@@ -1,3 +1,4 @@
+import datetime
 import decimal
 import re
 import StringIO
@@ -58,6 +59,7 @@ class BankAccountingEntry(models.Model):
 
 class CoffeeList(models.Model):
     pub_date = models.DateField(verbose_name="Publication date", auto_now_add=True)
+    processed_date = models.DateField(verbose_name="Date of processing", blank=True, null=True)
     processed = models.BooleanField(verbose_name="Processed?", help_text="Whether all pages were scanned", default=False)
     approved = models.BooleanField(verbose_name="Approved?", help_text="Whether this was checked by the team and found ok", default=False)
 
@@ -66,6 +68,11 @@ class CoffeeList(models.Model):
 
     def __unicode__(self):
         return "CoffeeList from %s" % (self.pub_date,)
+
+    def save(self, *args, **kwargs):
+        if not self.processed_date and self.processed:
+            self.processed_date = datetime.date.today()
+        super(CoffeeList, self).save(*args, **kwargs)
 
     @transaction.atomic
     def approve(self):

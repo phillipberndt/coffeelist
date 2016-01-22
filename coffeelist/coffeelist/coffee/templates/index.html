@@ -47,7 +47,7 @@
 
 		<ul>
 		{% for sheet in sheet_list %}
-		<li><a href="/sheet/{{ sheet.pk }}">{{ sheet.pub_date }}</a>
+		<li><a href="/sheet/{{ sheet.pk }}">{{ sheet.pub_date }}{% if sheet.processed_date %} – {{ sheet.processed_date }}{% endif %}</a>
 		{% if not sheet.approved %}
 			<span data-toggle="tooltip"
 				title="This sheet was scanned but the automated detection was not yet approved by us" data-placement="right" class="label label-info">Unapproved</span>
