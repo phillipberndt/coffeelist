@@ -1,4 +1,5 @@
 # encoding: utf-8
+import logging
 
 from django.core import mail
 from django.db.models import Q
@@ -7,6 +8,8 @@ from django.template import Context
 from django.conf import settings
 
 from . import models
+
+logger = logging.getLogger(__name__)
 
 def render_balance_mail(deposit_changes, drinker, mail_template=None):
     if mail_template is None:
@@ -40,6 +43,13 @@ def send_balance_mails(deposit_changes):
                                           headers={"Content-Type": "text/plain; charset=utf8"}))
 
     connection = mail.get_connection()
-    connection.open()
-    connection.send_messages(messages)
-    connection.close()
+    exception_raised = False
+    for message in messages:
+        try:
+            connection.send_messages([ message ])
+        except Exception as e:
+            logger.error("Failed to send mail to %s: %s" % (message.to, str(e)))
+            exception_raised = True
+
+    if exception_raised:
+        raise RuntimeError("At least one email failed to send.")
