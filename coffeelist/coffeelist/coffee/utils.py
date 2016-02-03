@@ -155,7 +155,7 @@ def generate_list(list_id, names, pre_cross_dict={}, title="Coffee list", canvas
         canvas.save()
         return outfile
 
-def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE):
+def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE, debug=False):
     """
         Given a coffee list as a numpy array / OpenCV image, detect the crosses
         that were drawn onto it.
@@ -165,6 +165,7 @@ def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE):
         Parameters:
             image: The image
             expect_lines: The maximum number of rows to search for
+            debug: Annotate all boxes with the threshold values
 
         Returns:
             A tuple, (marked_image, marks, mark_y_positions), where
@@ -257,6 +258,12 @@ def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE):
             mean2 = numpy.mean(mark_more)
             mean_halves = numpy.array([ numpy.mean(mark[:mark.shape[0]/2, :]), numpy.mean(mark[mark.shape[0]/2:, :])])
             mean2_halves = numpy.array([ numpy.mean(mark_more[:mark.shape[0]/2, :]), numpy.mean(mark_more[mark.shape[0]/2:, :])])
+            if debug:
+                # Debug output
+                cv2.putText(im, "%d" % mean, (xp, find_line_y + 10), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
+                cv2.putText(im, "%d" % mean2, (xp, find_line_y + 20), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
+                cv2.putText(im, "%d" % mean_halves[0], (xp, find_line_y + 30), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
+                cv2.putText(im, "%d" % mean_halves[1], (xp, find_line_y + 40), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
             if mean < 220 and mean2 < 100:
                 color = ERROR_COLOR
             elif mean < 255 and mean2 < 220 and all(mean_halves + mean2_halves < 255*2):
@@ -273,7 +280,7 @@ def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE):
 
     return im, markings, mark_y_positions
 
-def scan_list(image):
+def scan_list(image, debug=False):
     """
         Given a coffee list scan as a PIL/Pillow object, detect the QR code and
         markings.
@@ -308,6 +315,6 @@ def scan_list(image):
     if not first_is_left:
         image = image.rotate(90, expand=True)
 
-    marked_image, markings, mark_y_positions = detect_marks(numpy.array(image))
+    marked_image, markings, mark_y_positions = detect_marks(numpy.array(image), debug=debug)
 
     return PIL.Image.fromarray(marked_image), list_meta_data, markings, mark_y_positions
