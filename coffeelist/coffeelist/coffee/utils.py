@@ -264,9 +264,9 @@ def detect_marks(image, expect_lines=COFFEE_COUNT_PER_PAGE, debug=False):
                 cv2.putText(im, "%d" % mean2, (xp, find_line_y + 20), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
                 cv2.putText(im, "%d" % mean_halves[0], (xp, find_line_y + 30), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
                 cv2.putText(im, "%d" % mean_halves[1], (xp, find_line_y + 40), cv2.FONT_HERSHEY_SIMPLEX, .4, (255, 0, 0))
-            if mean < 220 and mean2 < 100:
+            if (mean < 125 and mean2 < 80) or (mean < 200 and mean2 < 40):
                 color = ERROR_COLOR
-            elif mean < 255 and mean2 < 220 and all(mean_halves + mean2_halves < 255*2):
+            elif mean < 255 and mean2 < 220 and all(mean_halves < 255) and all(mean2_halves < 255):
                 color = MARK_COLOR
                 count += 1
             im[find_line_y:find_line_y+field_height+1, xp:xp+field_width+1] = .7 * im[find_line_y:find_line_y+field_height+1, xp:xp+field_width+1] + .3 * color
