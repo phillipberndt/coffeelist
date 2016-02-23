@@ -3,6 +3,7 @@ import decimal
 import re
 import StringIO
 
+from django.conf import settings
 from django.db import models
 from django.db import transaction
 from django.core.exceptions import ValidationError
@@ -13,7 +14,7 @@ from django.core.mail import send_mail
 
 from . import utils
 
-COST_PER_COFFEE = decimal.Decimal(".5")
+COST_PER_COFFEE = getattr(settings, "COST_PER_COFFEE", decimal.Decimal(".5"))
 
 class CoffeeDrinker(models.Model):
     name = models.CharField(help_text="Name of him (or her) who drinks le coffee", max_length=100)
