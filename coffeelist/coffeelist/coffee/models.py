@@ -109,6 +109,10 @@ class CoffeeList(models.Model):
         drinkers = list(CoffeeDrinker.objects.filter(active=True).order_by("name"))
         new_list = CoffeeList.objects.create()
 
+        first_page_count = len(drinkers) % utils.COFFEE_COUNT_PER_PAGE
+        if first_page_count == 0:
+            first_page_count = utils.COFFEE_COUNT_PER_PAGE
+
         current_sheet_number = 0
         lists = []
         while drinkers:
@@ -128,6 +132,9 @@ class CoffeeList(models.Model):
                 names_for_sheet.append(drinker.name)
                 if drinker.prefill:
                     prefill_for_sheet[drinker.name] = drinker.prefill
+
+                if current_sheet_number == 1 and sheet_user_number == first_page_count:
+                    break
             lists.append((current_sheet.pk, names_for_sheet, prefill_for_sheet))
 
         output_pdf = utils.generate_lists(lists, title)
