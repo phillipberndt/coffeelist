@@ -106,9 +106,10 @@
 	});
 
 	{% if request.user.is_authenticated %}
-	$("#fix-dialog .crosscount, #fix-dialog .save").keypress(function(e) {
+	$("#fix-dialog .crosscount").keypress(function(e) {
 		if(e.keyCode == 13) $(this).click();
-	}).click(function() {
+	});
+	$("#fix-dialog .save").click(function() {
 		$.post($("#fix-dialog").data("response-url"), { "cross_count": $("#fix-dialog .crosscount").val() }, function() { $("#fix-dialog").modal("hide"); });
 	});
 	{% endif %}
