@@ -124,7 +124,8 @@ def generate_list(list_id, names, pre_cross_dict={}, title="Coffee list", canvas
     canvas.setFont("Helvetica", 9)
     ypos = -.2
     COFFEE_SHEET_BOTTOM_TEXT = getattr(config, "COFFEE_SHEET_BOTTOM_TEXT", "")
-    for text in COFFEE_SHEET_BOTTOM_TEXT:
+    for text in COFFEE_SHEET_BOTTOM_TEXT.split("\n"):
+        text = text.strip()
         canvas.drawString(qr_size + 1. * cm_unit, qr_size - ypos * cm_unit, text)
         ypos += .5
 
