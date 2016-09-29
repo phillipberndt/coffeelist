@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
+from constance import config
 
 from . import models
 
@@ -19,7 +20,7 @@ def render_balance_mail(deposit_changes, drinker, mail_template=None):
         "drinker": drinker,
         "cross_count": cross_count,
         "cost": cost,
-        "signature": getattr(settings, "COFFEE_SIGNATURE", "- coffee team -"),
+        "signature": getattr(config, "COFFEE_SIGNATURE", "- coffee team -"),
         "homepage": getattr(settings, "COFFEE_HOMEPAGE", "-"),
     }))
     return mail_text

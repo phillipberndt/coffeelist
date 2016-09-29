@@ -1,5 +1,5 @@
+from constance import config
 from django.contrib.auth.decorators import login_required
-from django.core.servers.basehttp import FileWrapper
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -8,8 +8,9 @@ from django.http import Http404
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
-from django.conf import settings
 from django.utils.encoding import force_text
+
+from wsgiref.util import FileWrapper
 
 import StringIO
 import os
@@ -57,7 +58,7 @@ def render_index_page(request, context=None):
         "total_transactions": len(bank_transactions),
         "bank_amount": bank_amount,
         "bank_accounting_entry_form": bank_accounting_entry_form,
-        "intro_text": getattr(settings, "COFFEE_PAGE_INTRO_TEXT", ""),
+        "intro_text": getattr(config, "COFFEE_PAGE_INTRO_TEXT", ""),
         "surplus": bank_amount - deposited,
     }
     rcontext.update(context or {})
@@ -143,10 +144,11 @@ def upload_sheet(request):
 def view_sheet(request, sheet_id):
     sheet = get_object_or_404(models.CoffeeList, pk=sheet_id)
     cross_count = sheet.pages.aggregate(sum=Sum("entries__cross_count"))["sum"]
+    COST_PER_COFFEE = getattr(config, "COST_PER_COFFEE", decimal.Decimal(".5"))
     try:
         first_entry = sheet.pages.get(page_number=1).entries.get(position=0)
         mail_preview = mail.render_balance_mail({
-            first_entry.coffee_drinker.pk: (first_entry.cross_count, models.COST_PER_COFFEE * first_entry.cross_count),
+            first_entry.coffee_drinker.pk: (first_entry.cross_count, COST_PER_COFFEE * first_entry.cross_count),
         }, first_entry.coffee_drinker)
     except:
         mail_preview = False

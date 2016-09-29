@@ -1,5 +1,6 @@
 # encoding: utf-8
 from django.conf import settings
+from constance import config
 
 import PIL.Image
 import StringIO
@@ -19,7 +20,6 @@ COFFEE_BOXES_PER_LINE = getattr(settings, "COFFEE_BOXES_PER_LINE", 40)
 COFFEE_NAME_FIELD_WIDTH = getattr(settings, "COFFEE_NAME_FIELD_WIDTH", 4.)
 COFFEE_SHEET_PAGE_FORMAT = getattr(settings, "COFFEE_SHEET_PAGE_FORMAT",
                                    reportlab.lib.pagesizes.A4)
-COFFEE_SHEET_BOTTOM_TEXT = getattr(settings, "COFFEE_SHEET_BOTTOM_TEXT", "")
 
 if COFFEE_USE_LANDSCAPE:
     COFFEE_SHEET_PAGE_FORMAT = getattr(settings, "COFFEE_SHEET_PAGE_FORMAT",
@@ -123,6 +123,7 @@ def generate_list(list_id, names, pre_cross_dict={}, title="Coffee list", canvas
     # Draw bottom text
     canvas.setFont("Helvetica", 9)
     ypos = -.2
+    COFFEE_SHEET_BOTTOM_TEXT = getattr(config, "COFFEE_SHEET_BOTTOM_TEXT", "")
     for text in COFFEE_SHEET_BOTTOM_TEXT:
         canvas.drawString(qr_size + 1. * cm_unit, qr_size - ypos * cm_unit, text)
         ypos += .5

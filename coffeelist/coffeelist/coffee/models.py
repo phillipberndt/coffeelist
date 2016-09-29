@@ -3,7 +3,7 @@ import decimal
 import re
 import StringIO
 
-from django.conf import settings
+from constance import config
 from django.db import models
 from django.db import transaction
 from django.core.exceptions import ValidationError
@@ -13,8 +13,6 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 
 from . import utils
-
-COST_PER_COFFEE = getattr(settings, "COST_PER_COFFEE", decimal.Decimal(".5"))
 
 class CoffeeDrinker(models.Model):
     name = models.CharField(help_text="Name of him (or her) who drinks le coffee", max_length=100)
@@ -80,6 +78,7 @@ class CoffeeList(models.Model):
         assert not self.approved
 
         deposit_changes = {}
+        COST_PER_COFFEE = getattr(config, "COST_PER_COFFEE", decimal.Decimal(".5"))
         for page in self.pages.all():
             for entry in page.entries.filter(cross_count__gt=0):
                 cost = entry.cross_count * COST_PER_COFFEE

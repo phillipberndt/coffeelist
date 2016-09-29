@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'bootstrapform',
+    'constance',
+    'constance.backends.database',
 
     "coffeelist.coffee",
 )
@@ -117,12 +119,12 @@ EMAIL_PORT = 25
 #EMAIL_HOST_PASSWORD = ""
 EMAIL_SENDER = ""
 
-COFFEE_SIGNATURE = "- the coffee list team -"
 COFFEE_HOMEPAGE = ".."
-COFFEE_PAGE_INTRO_TEXT = """
-	Welcome to the Coffee List administration page for this machine.
-"""
-COFFEE_SHEET_BOTTOM_TEXT = (
-    "This text is printed at the bottom of the form.",
-    "Use one string per line.",
-)
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'COFFEE_SIGNATURE': ("Coffee list team", "Signature in emails", str),
+    'COFFEE_PAGE_INTRO_TEXT': ("Welcome to the coffee liste", "Intro text displayed at the top of the homepage", str),
+    "COFFEE_SHEET_BOTTOM_TEXT": ("", "Text to be printed at the bottom of each sheet", str),
+    "COST_PER_COFFEE": (decimal.Decimal(".5"), "Cost of one coffee, in Euros", decimal.Decimal),
+}
