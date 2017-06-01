@@ -53,7 +53,11 @@
 		{% endif %}
 
 		{% if not sheet.approved %}
+		{% if sheet.processed %}
 		<a href="{% url "approve-sheet" sheet.pk %}" class="btn btn-primary" onclick="return confirm('Are you certain you want to approve of this sheet?');">Approve sheet</a>
+		{% else %}
+		<p>You can approve of this sheet once you have scanned all pages.</p>
+		{% endif %}
 		<a href="{% url "download-sheet" sheet.pk %}" class="btn btn-default">Download blank sheet</a>
 
 		{% if mail_preview %}
